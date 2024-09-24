@@ -24,10 +24,15 @@
     $showForm = true; // Add this variable to control the display
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $servername = $_POST["servername"];
-        $username = $_POST["username"];
-        $password = $_POST["password"];
-        $dbname = $_POST["dbname"];
+        session_start(); // Start the session
+        $_SESSION['servername'] = $servername = $_POST["servername"];
+        $_SESSION['username'] = $username = $_POST["username"];
+        $_SESSION['password'] = $password = $_POST["password"];
+        $_SESSION['dbname'] = $dbname = $_POST["dbname"];
+		$admin_f_name = $_POST["admin_f_name"];
+		$admin_l_name = $_POST["admin_l_name"];
+		$admin_pass = $_POST["admin_pass"];
+		$admin_email = $_POST["admin_email"];
 
         // Create the database connection
         $conn = new mysqli($servername, $username, $password);
@@ -52,6 +57,13 @@
 
             // Define SQL commands to create tables
             $sql = array(
+                "CREATE TABLE IF NOT EXISTS users (
+				    id INT(8) AUTO_INCREMENT PRIMARY KEY,
+					f_name VARCHAR(32) NOT NULL,
+					l_name VARCHAR(32) NOT NULL,
+					email VARCHAR(128) NOT NULL,
+					pass VARCHAR(64) NOT NULL
+                )",
                 "CREATE TABLE IF NOT EXISTS visit_reasons (
                     reason_id INT AUTO_INCREMENT PRIMARY KEY,
                     reason_description VARCHAR(255) NOT NULL
@@ -72,13 +84,17 @@
                     visit_reason_id INT,
                     FOREIGN KEY (visiting_person_id) REFERENCES visiting_persons(person_id),
                     FOREIGN KEY (visit_reason_id) REFERENCES visit_reasons(reason_id)
-                )"
+                )",
+				"INSERT INTO users 
+				    (f_name, l_name, pass, email)
+				    VALUES ('".$admin_f_name."', '".$admin_l_name."', '".$admin_pass."', '".$admin_email."'
+				)"
             );
 
             // Execute SQL commands
             foreach ($sql as $query) {
                 if ($conn->query($query) === TRUE) {
-                    echo "Table created successfully.<br>";
+                    echo "Table created successfully, Or Data Has Been Inserted<br>";
                 } else {
                     echo "Error creating table: " . $conn->error . "<br>";
                 }
@@ -126,20 +142,36 @@ function getDBConnection() {
     <form method="POST">
         <table>
             <tr>
-                <td><label for="servername">Server Name:</label></td>
+                <td><label for="servername">DB Server Name:</label></td>
                 <td><input type="text" name="servername" required value="localhost"></td>
             </tr>
             <tr>
-                <td><label for="username">Username:</label></td>
+                <td><label for="username">DB Username:</label></td>
                 <td><input type="text" name="username" required></td>
             </tr>
             <tr>
-                <td><label for="password">Password:</label></td>
+                <td><label for="password">DB Password:</label></td>
                 <td><input type="password" name="password" required></td>
             </tr>
             <tr>
                 <td><label for="dbname">Database Name:</label></td>
                 <td><input type="text" name="dbname" required></td>
+            </tr>
+            <tr>
+                <td><label for="dbname">Admin First Name:</label></td>
+                <td><input type="text" name="admin_f_name" required></td>
+            </tr>
+            <tr>
+                <td><label for="dbname">Admin Last Name:</label></td>
+                <td><input type="text" name="admin_l_name" required></td>
+            </tr>
+            <tr>
+                <td><label for="dbname">Admin Password:</label></td>
+                <td><input type="text" name="admin_pass" required></td>
+            </tr>
+            <tr>
+                <td><label for="dbname">Admin Email:</label></td>
+                <td><input type="text" name="admin_email" required></td>
             </tr>
             <tr>
                 <td></td>
@@ -175,8 +207,7 @@ function getDBConnection() {
             </td>
         </tr>
     </table>
-    <h2><a href="/admin/" class="button">Continue to Admin Dashboard to Finish Configuration.</a></h2>
+    <h2><a href="/admin/login.php" class="button">Log In to Continue to the Admin Dashboard to Finish Configuration.</a></h2>
     <?php endif; ?>
 </body>
 </html>
-
