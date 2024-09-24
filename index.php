@@ -98,6 +98,10 @@ $conn->close();
     <meta charset="UTF-8">
 </head>
 <body>
+<?php
+include 'admin/header.php';
+?>
+
     <img src="../img/dnd-project-sm-logo.png">
 
     <h1>Visitor Management</h1>
