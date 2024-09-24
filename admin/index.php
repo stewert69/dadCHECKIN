@@ -1,6 +1,31 @@
 <?php
 session_start(); // Start the session
 
+// Check for admin log in
+if ($_SESSION['user'] == "") {
+pop("No User Is Logged In!");
+header('location:login.php');
+}
+
+if ($_SESSION['user'] == "Admin") {
+//pop("Logged In As Admin");
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
+session_start();
+unset($_SESSION['user']);
+header('location:index.php');
+}
+
+function pop($msg) {
+echo '
+<script>
+alert("' . $msg . '");
+</script>
+';
+}
+
+
 // Check if the form has been submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['theme'])) {
     // Get the selected theme from the form
@@ -69,5 +94,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['theme'])) {
         </select>
         <input type="submit" value="Apply Theme">
     </form>
+            <form method="POST" action="">
+    <center>
+    <input type="hidden" name="logout" value="logout">
+        <button type="submit" class="button">Log Out</button><br>
+    </center>
+</form>
+ 
 </body>
 </html>
