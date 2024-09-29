@@ -119,4 +119,15 @@ canvas {
     height: 100% !important;
 }
 
+.login-button {
+    background-color: #333333; /* Red background */
+    color: white;         /* White text */
+    border: none;         /* No border */
+    padding: 10px 20px;   /* Padding around the text */
+    border-radius: 5px;   /* Rounded corners */
+    cursor: pointer;      /* Cursor changes to pointer on hover */
+    /* Add any other styles you need */
+}
+
+
 /* You might want to add additional styling specific to your charts here */
